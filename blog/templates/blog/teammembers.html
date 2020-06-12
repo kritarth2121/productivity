@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+    <h1 class="mb-3">Teams Members {{ self.kwargs.name }} </h1>
+    {% for post in team %}
+                <article class="media content-section">
+         
+            <p class="article-content"><a  href="{% url 'user-posts' post.user %}">{{ post.user }}</p>
+           
+
+          
+        </article>
+    {% endfor %}
+
+    {% endblock content %}
