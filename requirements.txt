@@ -6,7 +6,7 @@ chardet==3.0.4
 cycler==0.10.0
 decorator==4.4.2
 distlib==0.3.0
-Django==2.2.4
+Django==2.2.13
 django-ajax-tables==1.0.0
 django-bootstrap-datepicker-plus==3.0.5
 django-bootstrap4==1.0.1
