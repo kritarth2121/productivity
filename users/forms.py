@@ -22,3 +22,4 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image','goal']
+        widgets = { 'goal': forms.Textarea(attrs={'rows':10, 'cols':20}),}

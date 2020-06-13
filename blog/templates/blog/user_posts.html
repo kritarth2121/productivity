@@ -12,10 +12,9 @@
  <img class="rounded-circle article-img" src="{{ posts.first.assigned_employee.profile.image.url }}">
             <label for="formGroupExampleInput2"><u>Employee</u></label>
               <a class="mr-2" href="{% url 'user-posts' posts.first.assigned_employee.username %}">{{ posts.first.assigned_employee.get_full_name }}</a>
-                             <label for="formGroupExampleInput2"><u><b>User Goal :</b></u>{{ posts.first.assigned_employee.profile.goal }}</label>
-
-        <br>
-        <br>
+                            <p> <label for="formGroupExampleInput2"><u><b>User Goal :</b></u>{{ posts.first.assigned_employee.profile.goal }}</label>
+</p>
+      
     {% for post in posts %}
 
                 <article class="media content-section">
