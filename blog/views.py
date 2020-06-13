@@ -13,7 +13,7 @@ from django.views.generic import (
 import datetime
 from users import views as user_views
 
-from .models import Post,Views,Team,TeamMember
+from .models import Post,Team,TeamMember
 from django.db.models.functions import datetime
 import datetime
 
@@ -44,9 +44,9 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 5
-
+@login_required
 def admi(request):
-    if request.user.is_superuser:
+    if request.user.is_superuser==True:
         context = {
                 'team':Team.objects.filter(owner=request.user),
 
@@ -55,7 +55,8 @@ def admi(request):
         
         return render(request, 'blog/team.html', context)
     else:
-        return redirect('blog-home')
+        return redirect('hom')
+
 def teammembers(request,name):
     if request.user.is_superuser:
         context = {
@@ -65,6 +66,21 @@ def teammembers(request,name):
         
         print(context)
         return render(request, 'blog/teammembers.html', context)
+
+
+
+class UserPost(LoginRequiredMixin,ListView):
+    model = Post
+    template_name = 'blog/user_post.html'  # <app>/<model>_<viewtype>.html
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        print(self.request.user)
+        print(Post.objects.all())
+        #user = get_object_or_404(User, username=self.kwargs.get('username'))
+        user = get_object_or_404(User, username=self.request.user)
+        return Post.objects.filter(assigned_employee__username=user).order_by('-date_posted')
 
 class UserPostListView(LoginRequiredMixin,ListView):
     model = Post
@@ -126,9 +142,9 @@ class PostCreateView(UserPassesTestMixin, CreateView):
 @login_required
 def create(request):
     print(datetime.datetime.now().hour)
-    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==0 ) or (Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user).work_done==None and (int(datetime.datetime.now().hour)>=18 or int(datetime.datetime.now().hour)<=3)):
+    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==0  or Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==1)  :
 
-        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<18:
+        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<=14:
             if request.method == 'POST':
                 today=request.POST['today']
                 ins=Post.objects.create(work_today=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
@@ -154,7 +170,7 @@ def create(request):
 
 
             else:
-                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user) or Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),assigned_employee=request.user):
+                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)==1 or Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),assigned_employee=request.user)==1:
                     insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)
                     context={
                         'post':insta.work_today

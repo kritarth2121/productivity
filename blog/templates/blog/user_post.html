@@ -2,13 +2,7 @@
 
 {% block content %}
     
-                     {% if user.is_superuser %}
 
-        <button type='button' style="float:right"><a class="mr-2" href="{% url 'profileupdate' view.kwargs.username %}">Update {{view.kwargs.username}} Profile</a></button>
-                      
-                      
-
-                      {% endif %}
  <img class="rounded-circle article-img" src="{{ posts.first.assigned_employee.profile.image.url }}">
             <label for="formGroupExampleInput2"><u>Employee</u></label>
               <a class="mr-2" href="{% url 'user-posts' posts.first.assigned_employee.username %}">{{ posts.first.assigned_employee.get_full_name }}</a>

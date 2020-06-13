@@ -23,8 +23,7 @@ class Post(models.Model):
         #print(reverse('post-detail',kwargs={'pk':self.pk}))
         #print(reverse('post-detail',args=[self.id]))
         return reverse('post-detail',kwargs={'pk':self.pk})
-class Views(models.Model):
-    view=models.IntegerField(default=0)
+
 
 class Team(models.Model):
     

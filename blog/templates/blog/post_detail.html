@@ -24,7 +24,7 @@
             <a class="article-content" href="{% url 'post-detail' post.id %}">{{ post.work_today }}</a><br>
                            <label for="formGroupExampleInput2"><u><b>Work Done</u></b></label><br>
 
-            <p class="article-content">{{ post.work_done }}</p>
+            <p class="article-content"><a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.work_done }}</a></p>
             <!--label for="formGroupExampleInput2"><u><b>Work Deadline</u></b></label>
                         <p class="article-content">{{ post.deadline }}</p>
                         <label for="formGroupExampleInput2"><u><b>Work Status</u></b></label>
