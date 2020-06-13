@@ -1,15 +1,31 @@
 {% extends "blog/base.html" %}
 
 {% block content %}
-    <h1 class="mb-3">Work for {{ user.username.title }} ({{ page_obj.paginator.count }})</h1>
-    <h3 class="mb-3">Goal: {{user.profile.goal}}</h3>
+    
+                     {% if user.is_superuser %}
+
+        <button type='button' style="float:right"><a class="mr-2" href="{% url 'profileupdate' view.kwargs.username %}">Update {{view.kwargs.username}} Profile</a></button>
+                      
+                      
+                      {% else %}
+<h1 class="mb-3">User {{ user.get_full_name }} ({{ page_obj.paginator.count }})</h1>
+    <h3 class="mb-3"> Goal: {{user.profile.goal}}</h3>
+                      {% endif %}
+
+
+        <br>
+        <br>
     {% for post in posts %}
+
                 <article class="media content-section">
+                 <br>
+                 <br>
+                 <br>
           <img class="rounded-circle article-img" src="{{ post.assigned_employee.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-            <label for="formGroupExampleInput2"><u>Assigned Employee</u></label>
-              <a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.assigned_employee }}</a>
+            <label for="formGroupExampleInput2"><u>Employee</u></label>
+              <a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.assigned_employee.get_full_name }}</a>
               <label for="formGroupExampleInput2"><u>Date Given</u></label>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
@@ -18,6 +34,8 @@
                            <label for="formGroupExampleInput2"><u><b>Work Done</u></b></label><br>
 
             <p class="article-content"><a class="article-content" href="{% url 'post-detail' post.id %}">{{ post.work_done }} </a></p>
+                             <label for="formGroupExampleInput2"><u><b>User Goal :</b>{{ post.assigned_employee.profile.goal }}</u></label>
+
             <!--label for="formGroupExampleInput2"><u><b>Work Deadline</u></b></label>
                         <p class="article-content">{{ post.deadline }}</p>
                         <label for="formGroupExampleInput2"><u><b>Work Status</u></b></label>

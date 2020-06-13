@@ -54,6 +54,8 @@ def admi(request):
         print(context)
         
         return render(request, 'blog/team.html', context)
+    else:
+        return redirect('blog-home')
 def teammembers(request,name):
     if request.user.is_superuser:
         context = {
@@ -124,12 +126,12 @@ class PostCreateView(UserPassesTestMixin, CreateView):
 @login_required
 def create(request):
     print(datetime.datetime.now().hour)
-    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==0 ) or Post.objects.get(date_posted__day=datetime.datetime.now().day).work_done==None:
+    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==0 ) or (Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user).work_done==None and (int(datetime.datetime.now().hour)>=18 or int(datetime.datetime.now().hour)<=3)):
 
-        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<=13:
+        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<18:
             if request.method == 'POST':
                 today=request.POST['today']
-                ins=Post.create(work_today=today,assigned_employee=request.user,date_posted=timezone.now)
+                ins=Post.objects.create(work_today=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
                 ins.save()
                 return render(request, 'blog/home.html')
             else:
@@ -177,7 +179,7 @@ def update(request,pk):
                     return render(request, 'blog/home.html')
                 else:
                     return render(request, "blog/post_form.html" )
-            elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
+            elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
                 if request.method == 'POST':
                     today=request.POST['today']
                     if Post.objects.filter(id=pk).count()==1:
@@ -188,7 +190,11 @@ def update(request,pk):
                         
                         return redirect('blog-home')
                 else:
-                    return render(request, "blog/post_form.html" )
+                    insta=Post.objects.get(id=pk)
+                    context={
+                        'post':insta.work_today
+                    }
+                    return render(request, "blog/post_form1.html" ,context)
         else:
             return render(request,"blog/cantupdate.html")
 

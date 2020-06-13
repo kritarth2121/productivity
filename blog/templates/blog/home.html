@@ -6,7 +6,7 @@
           <div class="media-body">
             <div class="article-metadata">
             <label for="formGroupExampleInput2"><u>Assigned Employee</u></label>
-              <a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.assigned_employee }}</a>
+              <a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.assigned_employee.get_full_name }}</a>
               <label for="formGroupExampleInput2"><u>Date Given</u></label>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
