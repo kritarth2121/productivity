@@ -142,40 +142,39 @@ class PostCreateView(UserPassesTestMixin, CreateView):
 @login_required
 def create(request):
     print(datetime.datetime.now().hour)
-    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==0  or Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year).count()==1)  :
+    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0  or (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3))))  :
 
-        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<=14:
+        if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<=13:
             if request.method == 'POST':
                 today=request.POST['today']
                 ins=Post.objects.create(work_today=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
                 ins.save()
-                return render(request, 'blog/home.html')
+                return redirect('hom')
             else:
                 return render(request, "blog/post_form.html" )
         elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
             if request.method == 'POST':
                 today=request.POST['today']
-                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user).count()==1:
-                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)
+                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1:
+                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
                     insta.work_done=today
                     insta.save()
                     print("created")
                     
-                    return redirect('blog-home')
-                elif Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1)).count()==1:
-                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day)
+                    return redirect('hom')
+                elif Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
+                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
                     insta.work_done=today
                     insta.save()
-                    return redirect('blog-home')
-
-
+                    return redirect('hom')
             else:
-                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)==1 or Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),assigned_employee=request.user)==1:
+                if Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 or Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count==1:
                     insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)
                     context={
                         'post':insta.work_today
                     }
                     return render(request, "blog/post_form1.html" ,context)
+
                 else:
                     return render(request, "blog/notdone.html" )
         else:
@@ -192,7 +191,7 @@ def update(request,pk):
                     ins=Post.objects.get(id=pk)
                     ins.work_today=today
                     ins.save()
-                    return render(request, 'blog/home.html')
+                    return redirect('hom')
                 else:
                     return render(request, "blog/post_form.html" )
             elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
@@ -204,13 +203,15 @@ def update(request,pk):
                         insta.save()
                         print("created")
                         
-                        return redirect('blog-home')
+                        return redirect('hom')
                 else:
                     insta=Post.objects.get(id=pk)
                     context={
                         'post':insta.work_today
                     }
                     return render(request, "blog/post_form1.html" ,context)
+            else:
+                return render(request,"blog/return.html")
         else:
             return render(request,"blog/cantupdate.html")
 
