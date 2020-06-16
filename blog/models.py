@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+import datetime
 approval=[
         ('Assigned','Assigned'),
         ('YES','Completed'),
@@ -23,6 +24,10 @@ class Post(models.Model):
         #print(reverse('post-detail',kwargs={'pk':self.pk}))
         #print(reverse('post-detail',args=[self.id]))
         return reverse('post-detail',kwargs={'pk':self.pk})
+    def time(self):
+        currentTime = datetime.datetime.now() 
+        print(currentTime.hour)
+        return int(currentTime.hour)
 
 
 class Team(models.Model):
@@ -33,14 +38,14 @@ class Team(models.Model):
         return self.name
     
 
-
+'''
 
 class TeamMember(models.Model):
     """
     Bounds user to team
     """
     user = models.OneToOneField(User, null=True,on_delete=models.CASCADE)
-    team = models.ManyToManyField(Team)
+    team = models.ManyToManyField(Team)'''
 
 
 

@@ -12,8 +12,8 @@ from django.views.generic import (
 )
 import datetime
 from users import views as user_views
-
-from .models import Post,Team,TeamMember
+from users.models import Profile
+from .models import Post,Team
 from django.db.models.functions import datetime
 import datetime
 
@@ -60,7 +60,7 @@ def admi(request):
 def teammembers(request,name):
     if request.user.is_superuser:
         context = {
-                'team':TeamMember.objects.filter(team__name=name),
+                'team': Profile.objects.filter(team__name=name),
 
             }
         
@@ -74,6 +74,7 @@ class UserPost(LoginRequiredMixin,ListView):
     template_name = 'blog/user_post.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     paginate_by = 5
+    currentTime = datetime.datetime.now() 
 
     def get_queryset(self):
         print(self.request.user)
@@ -81,12 +82,14 @@ class UserPost(LoginRequiredMixin,ListView):
         #user = get_object_or_404(User, username=self.kwargs.get('username'))
         user = get_object_or_404(User, username=self.request.user)
         return Post.objects.filter(assigned_employee__username=user).order_by('-date_posted')
+    
 
 class UserPostListView(LoginRequiredMixin,ListView):
     model = Post
     template_name = 'blog/user_posts.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     paginate_by = 5
+    currentTime = datetime.datetime.now() 
 
     def get_queryset(self):
         print(self.request.user)
@@ -99,6 +102,7 @@ class UserPostList(LoginRequiredMixin,ListView):
     template_name = 'blog/user_posts.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     paginate_by = 5
+    currentTime = datetime.datetime.now() 
 
     def get_queryset(self):
         print(self.request.user)
@@ -122,23 +126,14 @@ class PostDetailView(ListView):
     
     template_name = 'blog/post_detail.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
+    currentTime = datetime.datetime.now() 
     def get_queryset(self):
         user = get_object_or_404(Post, pk=self.kwargs.get('pk'))
         print(user.id)
         return Post.objects.filter(id=user.id)
 
 
-class PostCreateView(UserPassesTestMixin, CreateView):
-    model = Post
-    fields = ['assigned_employee','work_today', 'work_done']
-    template_name='blog/post_detail.html'
-    def form_valid(self, form):
-            return super().form_valid(form)
-    def test_func(self):
-        #post = self.get_object()
-        if self.request.user.is_superuser:
-            return True
-        return False
+
 @login_required
 def create(request):
     print(datetime.datetime.now().hour)
@@ -151,7 +146,12 @@ def create(request):
                 ins.save()
                 return redirect('hom')
             else:
-                return render(request, "blog/post_form.html" )
+                context = {
+                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+
+                }
+        
+                return render(request, 'blog/user_post.html', context)
         elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
             if request.method == 'POST':
                 today=request.POST['today']
@@ -167,20 +167,33 @@ def create(request):
                     insta.work_done=today
                     insta.save()
                     return redirect('hom')
-            else:
-                if Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 or Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count==1:
-                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,assigned_employee=request.user)
-                    context={
-                        'post':insta.work_today
-                    }
-                    return render(request, "blog/post_form1.html" ,context)
-
                 else:
-                    return render(request, "blog/notdone.html" )
+                    ins=Post.objects.create(work_done=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
+                    ins.save()
+                    return redirect('hom')
+
+            else:
+                context = {
+                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+
+                }
+        
+                return render(request, 'blog/user_post.html', context)
+                
         else:
-            return render(request, "blog/return.html" )
+            context = {
+                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+
+                }
+        
+            return render(request, 'blog/user_post.html', context)
     else:
-        return render(request, "blog/once.html" )
+        context = {
+                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+
+                }
+        
+        return render(request, 'blog/user_post.html', context)
 @login_required
 def update(request,pk):
         print(datetime.datetime.now().hour)

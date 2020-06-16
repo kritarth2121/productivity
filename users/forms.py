@@ -7,7 +7,7 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'first_name' ,'last_name','password1', 'password2']
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -21,5 +21,5 @@ class UserUpdateForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image','goal']
+        fields = ['image','goal','team']
         widgets = { 'goal': forms.Textarea(attrs={'rows':15, 'cols':20}),}

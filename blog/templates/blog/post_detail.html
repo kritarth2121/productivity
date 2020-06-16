@@ -15,14 +15,14 @@
           <img class="rounded-circle article-img" src="{{ post.assigned_employee.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-            <label for="formGroupExampleInput2"><u>Assigned Employee</u></label>
+            <label for="formGroupExampleInput2"><u>Assigned </u></label>
               <a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.assigned_employee }}</a>
-              <label for="formGroupExampleInput2"><u>Date Given</u></label>
+              <label for="formGroupExampleInput2"><u>Date </u></label>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
-            <label for="formGroupExampleInput2"><u><b>Work To be done </u></b></label><br>
+            <label for="formGroupExampleInput2"><u><b>Work That you will do today ? </u></b></label><br>
             <a class="article-content" href="{% url 'post-detail' post.id %}">{{ post.work_today }}</a><br>
-                           <label for="formGroupExampleInput2"><u><b>Work Done</u></b></label><br>
+                           <label for="formGroupExampleInput2"><u><b>Work that was done today ? Challenges Faced ?</u></b></label><br>
 
             <p class="article-content"><a class="mr-2" href="{% url 'user-posts' post.assigned_employee.username %}">{{ post.work_done }}</a></p>
             <!--label for="formGroupExampleInput2"><u><b>Work Deadline</u></b></label>
@@ -32,11 +32,10 @@
 
           </div>
         </article>
-{% if date_created|date:"d" == now|date:"d" %}
+
           <div>
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' post.id %}">Update</a>
           </div>
-        {% endif %}
      {% endfor %}
 
   </article>

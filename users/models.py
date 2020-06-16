@@ -5,11 +5,14 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from blog.models import Team 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-    goal=models.CharField(max_length=10000)
+    goal=models.CharField(max_length=1000)
+    role=models.CharField(max_length=100)
+    team=models.ForeignKey(Team,on_delete=models.CASCADE,default=1)
     def __str__(self):
         return f'{self.user.username} Profile'
 

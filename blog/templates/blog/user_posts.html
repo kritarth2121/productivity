@@ -9,15 +9,52 @@
                       
 
                       {% endif %}
- <img class="rounded-circle article-img" src="{{ posts.first.assigned_employee.profile.image.url }}">
-            <label for="formGroupExampleInput2"><u>Employee</u></label>
-              <a class="mr-2" href="{% url 'user-posts' posts.first.assigned_employee.username %}">{{ posts.first.assigned_employee.get_full_name }}</a>
-                            <p> <label for="formGroupExampleInput2"><u><b>User Goal :</b></u>{{ posts.first.assigned_employee.profile.goal|safe }}</label>
-</p>
-      
+ <br>
+ <br>
+     
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container" style="margin:auto;">
+    <div class="row">
+        <div class="col-xs-120 col-sm-100 col-md-180">
+        <div class="card" style="width: 70rem;">
+      <div class="card-body">
+        <h5 class="card-title">
+
+                <div class="row">
+                    <div class="col-sm-3 col-md-3">
+                        <img src="{{ posts.first.assigned_employee.profile.image.url }}" alt="" class="img-rounded img-responsive" />
+                    </div>
+                    <div class="col-sm-6 col-md-6" style="">
+                        <h4>
+                           <b> {{ posts.first.assigned_employee.get_full_name }}</b><p style="float:right;"> {{ posts.first.assigned_employee.profile.role|safe }}
+</p></h4>                            
+                           
+                        
+                        <p>
+                            <i class="glyphicon glyphicon-envelope"></i>{{ posts.first.assigned_employee.email }}
+                            <br />
+                            <i class="glyphicon glyphicon-gift"></i><div class="card" style="width: 50rem;">
+  <div class="card-body">
+<p class="article-content"><b>User Goal</b><br>{{ posts.first.assigned_employee.profile.goal|safe }}</p></p>  
+  </div>
+</div>
+  </div>
+</div>  </div>
+
+                        <!-- Split button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  <br>
+    <br>
+    <br>
+    <br>
     {% for post in posts %}
 
-                <article class="media content-section">
+                              <article class="media content-section" style="text-align: center;">
                  <br>
                  <br>
                  <br>
@@ -27,11 +64,11 @@
 
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
-            <label for="formGroupExampleInput2"><u><b>Work To be done </u></b></label><br>
-            <a class="article-content" href="{% url 'post-detail' post.id %}">{{ post.work_today }}</a><br>
-                           <label for="formGroupExampleInput2"><u><b>Work Done</u></b></label><br>
+            <label for="formGroupExampleInput2"><u><b>Work That you will do today ? </u></b></label><br>
+            <p class="article-content">{{ post.work_today }}</a><br><br></p>
+                           <label for="formGroupExampleInput2"><u><b>Work that was done today ? Challenges Faced?</u></b></label><br>
 
-            <p class="article-content"><a class="article-content" href="{% url 'post-detail' post.id %}">{{ post.work_done }} </a></p>
+            <p class="article-content">{{ post.work_done }} </a></p>
 
             <!--label for="formGroupExampleInput2"><u><b>Work Deadline</u></b></label>
                         <p class="article-content">{{ post.deadline }}</p>
