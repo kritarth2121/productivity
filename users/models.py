@@ -12,7 +12,7 @@ class Profile(models.Model):
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
     goal=models.CharField(max_length=1000)
     role=models.CharField(max_length=100)
-    team=models.ForeignKey(Team,on_delete=models.CASCADE,default=1)
+    team=models.ForeignKey(Team,on_delete=models.CASCADE,blank=True, null=True)
     def __str__(self):
         return f'{self.user.username} Profile'
 
