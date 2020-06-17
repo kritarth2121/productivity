@@ -164,7 +164,7 @@ def create(request):
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
 
-                    paginator = Paginator(postss, 5)
+                    paginator = Paginator(postss, 7)
                     try:
                         posts = paginator.page(page)
                     except PageNotAnInteger:
@@ -177,7 +177,7 @@ def create(request):
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
 
-                    paginator = Paginator(postss, 5)
+                    paginator = Paginator(postss, 7)
                     try:
                         posts = paginator.page(page)
                     except PageNotAnInteger:
@@ -215,7 +215,7 @@ def create(request):
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
 
-                    paginator = Paginator(postss, 5)
+                    paginator = Paginator(postss, 7)
                     try:
                         posts = paginator.page(page)
                     except PageNotAnInteger:
@@ -229,7 +229,7 @@ def create(request):
                 postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                 page = request.GET.get('page', 1)
 
-                paginator = Paginator(postss, 5)
+                paginator = Paginator(postss, 7)
                 try:
                     posts = paginator.page(page)
                 except PageNotAnInteger:
@@ -243,7 +243,7 @@ def create(request):
             postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
             page = request.GET.get('page', 1)
 
-            paginator = Paginator(postss, 5)
+            paginator = Paginator(postss, 7)
             try:
                 posts = paginator.page(page)
             except PageNotAnInteger:
@@ -258,7 +258,7 @@ def create(request):
         postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
         page = request.GET.get('page', 1)
 
-        paginator = Paginator(postss, 5)
+        paginator = Paginator(postss, 7)
         try:
             posts = paginator.page(page)
         except PageNotAnInteger:
