@@ -10,7 +10,6 @@
  <br>
 
     
-     
 <!------ Include the above in your HEAD tag ---------->
 
 <div class="container" style="margin:auto;">
@@ -22,20 +21,20 @@
 
                 <div class="row">
                     <div class="col-sm-3 col-md-3">
-                        <img src="{{ posts.first.assigned_employee.profile.image.url }}" alt="" class="img-rounded img-responsive" />
+                        <img src="{{ user.profile.image.url }}" alt="" class="img-rounded img-responsive" />
                     </div>
                     <div class="col-sm-6 col-md-6" style="">
                         <h4>
-                           <b> {{ posts.first.assigned_employee.get_full_name }}</b><p style="float:right;"> {{ posts.first.assigned_employee.profile.role|safe }}
+                           <b> {{ user.get_full_name }}</b><p style="float:right;"> {{ user.profile.role|safe }}
 </p></h4>                            
                            
                         
                         <p>
-<i class="glyphicon glyphicon-envelope"></i>{{ posts.first.assigned_employee.email }}
+<i class="glyphicon glyphicon-envelope"></i>{{ user.email }}
 <br />
 <i class="glyphicon glyphicon-gift"></i><div class="card" style="width: 50rem;">
   <div class="card-body">
-<p class="article-content"><b>User Goal</b><br>{{ posts.first.assigned_employee.profile.goal|safe }}</p></p>  
+<p class="article-content"><b>User Goal</b><br>{{ user.profile.goal|safe }}</p></p>  
   </div>
 </div>
   </div>
@@ -58,15 +57,15 @@
   {{ user.username }}
   </div>
   <div class="form-group">
-  {% if posts.first.time <= '6' %}
+  {% if posts.0.time >= 6 and  posts.0.time <= 13 %}
     <label for="formGroupExampleInput">What Work will you do today::</label>
-    <input type="text"  class="form-control" placeholder="" value="" name="today" />
-{% elif posts.first.time >= 18 and  posts.first.time <= 24 %}
+    <textarea rows="5" class="form-control" placeholder="" value="" name="today" /></textarea>
+{% elif posts.0.time >= 18 and  posts.0.time <= 24 %}
 <label for="formGroupExampleInput">Work that was done today ? Challenges Faced?</label>
-    <input type="text"  class="form-control" placeholder="" value="" name="today" />
-{% elif  posts.first.time >= 0 and  posts.first.time <= 3%}
+    <textarea rows="5"  class="form-control" placeholder="" value="" name="today" /></textarea>
+{% elif  posts.0.time >= 0 and  posts.0.time <= 3%}
 <label for="formGroupExampleInput">Work that was done today ? Challenges Faced?</label>
-    <input type="text"  class="form-control" placeholder="" value="" name="today" />
+    <textarea rows="5"  class="form-control" placeholder="" value="" name="today" /></textarea>
 
 
 
@@ -81,15 +80,13 @@
     <br>
 
     {% for post in posts %}
-
                 <article class="media content-section" style="text-align: center;">
                  <br>
                  <br>
                  <br>
                     <div class="media-body">
             <div class="article-metadata">
-          <label for="formGroupExampleInput2"><u>Date Given :</u></label>
-
+          <label for="formGroupExampleInput2"><u>Date :</u></label>
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
             <label for="formGroupExampleInput2"><u><b>Work That you will do today ? </u></b></label><br>
@@ -106,25 +103,27 @@
           </div>
         </article>
     {% endfor %}
-    {% if is_paginated %}
+    
+    {% if posts.has_other_pages %} 
 
-      {% if page_obj.has_previous %}
+      {% if posts.has_previous %}
         <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
         <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
       {% endif %}
 
-      {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
+      {% for num in posts.paginator.page_range %}
+        {% if posts.number == num %}
           <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
           <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
         {% endif %}
       {% endfor %}
 
-      {% if page_obj.has_next %}
+      {% if posts.has_next %}
         <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
         <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
       {% endif %}
 
     {% endif %}
+
 {% endblock content %}

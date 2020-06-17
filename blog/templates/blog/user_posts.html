@@ -1,7 +1,7 @@
 {% extends "blog/base.html" %}
-
 {% block content %}
-    
+    {% load get_user %}
+
                      {% if user.is_superuser %}
 
         <button type='button' style="float:right"><a class="mr-2" href="{% url 'profileupdate' view.kwargs.username %}">Update {{view.kwargs.username}} Profile</a></button>
@@ -11,6 +11,8 @@
                       {% endif %}
  <br>
  <br>
+ {% with view.kwargs.username|get_user as username %}
+
      
 <!------ Include the above in your HEAD tag ---------->
 
@@ -23,24 +25,26 @@
 
                 <div class="row">
                     <div class="col-sm-3 col-md-3">
-                        <img src="{{ posts.first.assigned_employee.profile.image.url }}" alt="" class="img-rounded img-responsive" />
+                        <img src="{{ username.profile.image.url }}" alt="" class="img-rounded img-responsive" />
                     </div>
                     <div class="col-sm-6 col-md-6" style="">
                         <h4>
-                           <b> {{ posts.first.assigned_employee.get_full_name }}</b><p style="float:right;"> {{ posts.first.assigned_employee.profile.role|safe }}
+                           <b> {{ username.get_full_name }}</b><p style="float:right;"> {{ username.profile.role|safe }}
 </p></h4>                            
                            
                         
                         <p>
-                            <i class="glyphicon glyphicon-envelope"></i>{{ posts.first.assigned_employee.email }}
+                            <i class="glyphicon glyphicon-envelope"></i>{{ username.email }}
                             <br />
                             <i class="glyphicon glyphicon-gift"></i><div class="card" style="width: 50rem;">
   <div class="card-body">
-<p class="article-content"><b>User Goal</b><br>{{ posts.first.assigned_employee.profile.goal|safe }}</p></p>  
+<p class="article-content"><b>User Goal</b><br>{{ username.profile.goal|safe }}</p></p>  
   </div>
 </div>
   </div>
 </div>  </div>
+ {% endwith %}
+
 
                         <!-- Split button -->
                         </div>
@@ -60,7 +64,7 @@
                  <br>
                     <div class="media-body">
             <div class="article-metadata">
-          <label for="formGroupExampleInput2"><u>Date Given :</u></label>
+          <label for="formGroupExampleInput2"><u>Date :</u></label>
 
               <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
             </div>
@@ -78,7 +82,7 @@
           </div>
         </article>
     {% endfor %}
-    {% if is_paginated %}
+{% if is_paginated %}
 
       {% if page_obj.has_previous %}
         <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
@@ -99,4 +103,6 @@
       {% endif %}
 
     {% endif %}
+
+
 {% endblock content %}

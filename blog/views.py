@@ -10,7 +10,11 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import timedelta
+
 import datetime
+from django.utils import timezone
 from users import views as user_views
 from users.models import Profile
 from .models import Post,Team
@@ -66,6 +70,8 @@ def teammembers(request,name):
         
         print(context)
         return render(request, 'blog/teammembers.html', context)
+    else:
+        return redirect('hom')
 
 
 
@@ -136,64 +142,131 @@ class PostDetailView(ListView):
 
 @login_required
 def create(request):
-    print(datetime.datetime.now().hour)
-    if (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0  or (Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3))))  :
+    for i in range(10):
+        print(i)
+    print(Post.objects.filter(date_posted__day=(datetime.datetime.now().day -1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user))
+    if Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0  or Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1   :
 
         if int(datetime.datetime.now().hour)>=6 and int(datetime.datetime.now().hour)<=13:
             if request.method == 'POST':
                 today=request.POST['today']
-                ins=Post.objects.create(work_today=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
-                ins.save()
-                return redirect('hom')
-            else:
-                context = {
-                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0:
+                    ins=Post.objects.create(work_today=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
+                    ins.save()
+                    return redirect('hom')
+                elif Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1:
+                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
+                    insta.work_today=today
+                    insta.save()
+                    return redirect('hom')
 
-                }
-        
-                return render(request, 'blog/user_post.html', context)
-        elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
+                else:
+                    postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+                    page = request.GET.get('page', 1)
+
+                    paginator = Paginator(postss, 5)
+                    try:
+                        posts = paginator.page(page)
+                    except PageNotAnInteger:
+                        posts = paginator.page(1)
+                    except EmptyPage:
+                        posts = paginator.page(paginator.num_pages)
+                    
+                    return render(request, 'blog/user_post.html', {'posts': posts})
+            else:
+                    postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+                    page = request.GET.get('page', 1)
+
+                    paginator = Paginator(postss, 5)
+                    try:
+                        posts = paginator.page(page)
+                    except PageNotAnInteger:
+                        posts = paginator.page(1)
+                    except EmptyPage:
+                        posts = paginator.page(paginator.num_pages)
+                    
+                    return render(request, 'blog/user_post.html', {'posts': posts})
+        elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
             if request.method == 'POST':
                 today=request.POST['today']
-                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1:
+                if Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>=18):
                     insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
                     insta.work_done=today
                     insta.save()
                     print("created")
                     
                     return redirect('hom')
-                elif Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>0 and int(datetime.datetime.now().hour<=3)):
-                    insta=Post.objects.get(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
+                elif Post.objects.filter(date_posted__day=(datetime.datetime.now().day -1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1 and (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
+                    insta=Post.objects.get(date_posted__day=(datetime.datetime.now().day -1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user)
                     insta.work_done=today
+                    print("created00000")
+
                     insta.save()
                     return redirect('hom')
-                else:
+                elif Post.objects.filter(date_posted__day=(datetime.datetime.now().day-1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0 and (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
+                    ins=Post.objects.create(work_done=today,assigned_employee=request.user,date_posted=(timezone.now() - timedelta(1)))
+                    ins.save()
+                    return redirect('hom')
+                elif Post.objects.filter(date_posted__day=datetime.datetime.now().day,date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0 :
                     ins=Post.objects.create(work_done=today,assigned_employee=request.user,date_posted=datetime.datetime.now())
                     ins.save()
                     return redirect('hom')
+                else:
+                    postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+                    page = request.GET.get('page', 1)
+
+                    paginator = Paginator(postss, 5)
+                    try:
+                        posts = paginator.page(page)
+                    except PageNotAnInteger:
+                        posts = paginator.page(1)
+                    except EmptyPage:
+                        posts = paginator.page(paginator.num_pages)
+                    
+                    return render(request, 'blog/user_post.html', {'posts': posts})
 
             else:
-                context = {
-                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+                postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+                page = request.GET.get('page', 1)
 
-                }
-        
-                return render(request, 'blog/user_post.html', context)
+                paginator = Paginator(postss, 5)
+                try:
+                    posts = paginator.page(page)
+                except PageNotAnInteger:
+                    posts = paginator.page(1)
+                except EmptyPage:
+                    posts = paginator.page(paginator.num_pages)
+                    
+                return render(request, 'blog/user_post.html', {'posts': posts})
                 
         else:
-            context = {
-                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+            postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+            page = request.GET.get('page', 1)
 
-                }
-        
-            return render(request, 'blog/user_post.html', context)
+            paginator = Paginator(postss, 5)
+            try:
+                posts = paginator.page(page)
+            except PageNotAnInteger:
+                posts = paginator.page(1)
+            except EmptyPage:
+                posts = paginator.page(paginator.num_pages)
+                    
+            return render(request, 'blog/user_post.html', {'posts': posts})
+
+                    
     else:
-        context = {
-                'posts': Post.objects.filter(assigned_employee=request.user).order_by('-date_posted'),
+        postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
+        page = request.GET.get('page', 1)
 
-                }
-        
-        return render(request, 'blog/user_post.html', context)
+        paginator = Paginator(postss, 5)
+        try:
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            posts = paginator.page(1)
+        except EmptyPage:
+            posts = paginator.page(paginator.num_pages)
+                    
+        return render(request, 'blog/user_post.html', {'posts': posts})
 @login_required
 def update(request,pk):
         print(datetime.datetime.now().hour)

@@ -13,7 +13,7 @@ app_name='blog'
 class Post(models.Model):
     assigned_employee = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    work_today = models.CharField(max_length=500)
+    work_today = models.CharField(max_length=500,null=True,blank=True)
     work_done = models.TextField(max_length=500,null=True,blank=True)
     date_posted = models.DateTimeField(default=timezone.now)
     #deadline=models.CharField(max_length=100)
