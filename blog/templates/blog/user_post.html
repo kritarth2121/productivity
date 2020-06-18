@@ -1,12 +1,7 @@
 {% extends "blog/base.html" %}
-
 {% block content %}
-    
-
-                      
-                      
-
- <br>
+{% load get_user %}
+               <br>
  <br>
 
     
@@ -55,19 +50,22 @@
   <div class="form-group">
     <label for="formGroupExampleInput"> Employee :</label>
   {{ user.username }}
+ 
   </div>
   <div class="form-group">
-  {% if posts.0.time >= 6 and  posts.0.time <= 13 %}
+  {% if time >= 6 and  time <= 13 %}
     <label for="formGroupExampleInput">What Work will you do today::</label>
     <textarea rows="5" class="form-control" placeholder="" value="" name="today" /></textarea>
-{% elif posts.0.time >= 18 and  posts.0.time <= 24 %}
+{% elif time >= 18 and  time <= 24 %}
 <label for="formGroupExampleInput">Work that was done today ? Challenges Faced?</label>
     <textarea rows="5"  class="form-control" placeholder="" value="" name="today" /></textarea>
-{% elif  posts.0.time >= 0 and  posts.0.time <= 3%}
+{% elif  time >= 0 and  time <= 3%}
 <label for="formGroupExampleInput">Work that was done today ? Challenges Faced?</label>
     <textarea rows="5"  class="form-control" placeholder="" value="" name="today" /></textarea>
 
 
+{% else %}
+<label for="formGroupExampleInput">Return in 6 am to 1pm for entering todays work and 6 pm to 3am for entering what you have done today</label>
 
 {% endif %}
   </div>

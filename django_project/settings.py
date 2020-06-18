@@ -60,6 +60,7 @@ TEMPLATES = [
             ],
             'libraries':{
             'get_user': 'blog.customtags.get_user',
+            'get_today': 'blog.customtags.get_today',
 
             }
         },

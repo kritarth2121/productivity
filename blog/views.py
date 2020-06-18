@@ -163,6 +163,7 @@ def create(request):
                 else:
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
+                    time=datetime.datetime.now().hour
 
                     paginator = Paginator(postss, 7)
                     try:
@@ -172,10 +173,11 @@ def create(request):
                     except EmptyPage:
                         posts = paginator.page(paginator.num_pages)
                     
-                    return render(request, 'blog/user_post.html', {'posts': posts})
+                    return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
             else:
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
+                    time=datetime.datetime.now().hour
 
                     paginator = Paginator(postss, 7)
                     try:
@@ -185,7 +187,7 @@ def create(request):
                     except EmptyPage:
                         posts = paginator.page(paginator.num_pages)
                     
-                    return render(request, 'blog/user_post.html', {'posts': posts})
+                    return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
         elif (int(datetime.datetime.now().hour)>=18 and int(datetime.datetime.now().hour)<=24) or (int(datetime.datetime.now().hour)>=0 and int(datetime.datetime.now().hour<=3)):
             if request.method == 'POST':
                 today=request.POST['today']
@@ -214,6 +216,7 @@ def create(request):
                 else:
                     postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                     page = request.GET.get('page', 1)
+                    time=datetime.datetime.now().hour
 
                     paginator = Paginator(postss, 7)
                     try:
@@ -223,11 +226,12 @@ def create(request):
                     except EmptyPage:
                         posts = paginator.page(paginator.num_pages)
                     
-                    return render(request, 'blog/user_post.html', {'posts': posts})
+                    return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
 
             else:
                 postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
                 page = request.GET.get('page', 1)
+                time=datetime.datetime.now().hour
 
                 paginator = Paginator(postss, 7)
                 try:
@@ -237,11 +241,12 @@ def create(request):
                 except EmptyPage:
                     posts = paginator.page(paginator.num_pages)
                     
-                return render(request, 'blog/user_post.html', {'posts': posts})
+                return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
                 
         else:
             postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
             page = request.GET.get('page', 1)
+            time=datetime.datetime.now().hour
 
             paginator = Paginator(postss, 7)
             try:
@@ -251,12 +256,13 @@ def create(request):
             except EmptyPage:
                 posts = paginator.page(paginator.num_pages)
                     
-            return render(request, 'blog/user_post.html', {'posts': posts})
+            return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
 
                     
     else:
         postss= Post.objects.filter(assigned_employee=request.user).order_by('-date_posted')
         page = request.GET.get('page', 1)
+        time=datetime.datetime.now().hour
 
         paginator = Paginator(postss, 7)
         try:
@@ -266,7 +272,7 @@ def create(request):
         except EmptyPage:
             posts = paginator.page(paginator.num_pages)
                     
-        return render(request, 'blog/user_post.html', {'posts': posts})
+        return render(request, 'blog/user_post.html', {'posts': posts,'time':time})
 @login_required
 def update(request,pk):
         print(datetime.datetime.now().hour)

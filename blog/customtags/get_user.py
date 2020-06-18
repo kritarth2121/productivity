@@ -1,6 +1,6 @@
 from django import template
 from django.contrib.auth.models import User
-
+import datetime
 register = template.Library()
 
 ########################
@@ -14,5 +14,12 @@ def get_user(username):
     print(user)
     print(username)
     return user
+
+@register.simple_tag
+def get_today(request):
+    print(123)
+    print(int(datetime.datetime.now().hour))
+
+    return int(datetime.datetime.now().hour)
 
 #register.filter('get_user',get_user)
