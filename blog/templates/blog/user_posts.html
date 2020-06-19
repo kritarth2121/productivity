@@ -5,7 +5,8 @@
                      {% if user.is_superuser %}
 
         <button type='button' style="float:right"><a class="mr-2" href="{% url 'profileupdate' view.kwargs.username %}">Update {{view.kwargs.username}} Profile</a></button>
-                      
+                <button type='button' style="float:right"><a class="mr-2" href="{% url 'password' view.kwargs.username %}">Update Password</a></button>
+              
                       
 
                       {% endif %}
@@ -25,7 +26,7 @@
 
                 <div class="row">
                     <div class="col-sm-3 col-md-3">
-                        <img src="{{ username.profile.image.url }}" alt="" class="img-rounded img-responsive" />
+                        <img src="{{ username.profile.image.url }}" alt="" class="img-rounded" height="250" width="250"/>
                     </div>
                     <div class="col-sm-6 col-md-6" style="">
                         <h4>

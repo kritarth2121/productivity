@@ -23,5 +23,6 @@ urlpatterns = [
     path('post/new/', create, name='post-create'),
     path('post/<int:pk>/update/', views.update, name='post-update'),
     path('', views.admi, name='team'),
-    path('<str:name>',views.teammembers,name='teammembers'),    
+    path('<str:name>',views.teammembers,name='teammembers'),
+    path('user/password/<str:name>',views.changepass,name='password')    
 ]

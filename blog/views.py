@@ -312,7 +312,15 @@ def update(request,pk):
     
 
         
-
+def changepass(request,name):
+    if request.method == 'POST':
+        today=request.POST['today']
+        u = User.objects.get(username__exact=name)
+        u.set_password(today)
+        u.save()
+        return redirect('user-posts',username=name)
+    else:
+        return render(request,'blog/post_form.html')
 
     #print(post.id)
 
