@@ -142,8 +142,15 @@ class PostDetailView(ListView):
 
 @login_required
 def create(request):
-    for i in range(10):
-        print(i)
+    if request.user.profile.last_time_logout:
+        d=request.user.profile.last_time_logout
+        for i in range(0,abs(datetime.datetime.now().day-d.day+1)):
+            if Post.objects.filter(date_posted=(timezone.now().date() - timedelta(i)),assigned_employee=request.user).count()==0 :
+                ins=Post.objects.create(assigned_employee=request.user,date_posted=(timezone.now().date() - timedelta(i)))
+                
+                ins.save()
+
+
     print(Post.objects.filter(date_posted__day=(datetime.datetime.now().day -1),date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user))
     if Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==0  or Post.objects.filter(date_posted__day=datetime.datetime.now().day , date_posted__month=datetime.datetime.now().month , date_posted__year=datetime.datetime.now().year,assigned_employee=request.user).count()==1   :
 

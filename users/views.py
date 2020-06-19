@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
 
 def register(request):
     if request.method == 'POST':
@@ -72,3 +73,14 @@ def profileupdate(request,name):
 
 
     return render(request, 'users/profileupdate.html',context)
+import datetime
+
+def logout_page(request):
+    profile = request.user.profile # it depends 
+    if request.user.is_authenticated:
+        logout(request)
+        profile.last_time_logout = datetime.datetime.now()
+        profile.save()
+        print(profile.last_time_logout)
+        return render(request,'users/logout.html')
+     

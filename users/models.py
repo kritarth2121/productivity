@@ -13,6 +13,7 @@ class Profile(models.Model):
     goal=models.CharField(max_length=1000)
     role=models.CharField(max_length=100)
     team=models.ForeignKey(Team,on_delete=models.CASCADE,blank=True, null=True)
+    last_time_logout=models.DateTimeField(blank=True, null=True)
     '''def __str__(self):
         return f'{self.user.username} Profile'
 

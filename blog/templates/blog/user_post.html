@@ -48,8 +48,7 @@
  {% csrf_token %}
 <legend class="border-bottom mb-4">Work :</legend>                        
   <div class="form-group">
-    <label for="formGroupExampleInput"> Employee :</label>
-  {{ user.username }}
+    <label for="formGroupExampleInput"><b>6 am to 1pm for entering todays work and 6 pm to 3am for entering what you have done today </b></label>
  
   </div>
   <div class="form-group">
@@ -64,8 +63,6 @@
     <textarea rows="5"  class="form-control" placeholder="" value="" name="today" /></textarea>
 
 
-{% else %}
-<label for="formGroupExampleInput">Return in 6 am to 1pm for entering todays work and 6 pm to 3am for entering what you have done today</label>
 
 {% endif %}
   </div>

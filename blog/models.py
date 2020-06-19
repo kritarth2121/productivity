@@ -39,7 +39,6 @@ class Team(models.Model):
     
 
 '''
-
 class TeamMember(models.Model):
     """
     Bounds user to team
