@@ -142,6 +142,7 @@ class PostDetailView(ListView):
 
 @login_required
 def create(request):
+    print(timezone.now().date() - timedelta(3))
     if request.user.profile.last_time_logout:
         d=request.user.profile.last_time_logout
         for i in range(0,abs(datetime.datetime.now().day-d.day+1)):
